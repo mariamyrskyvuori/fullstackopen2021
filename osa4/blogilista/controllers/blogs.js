@@ -5,6 +5,8 @@ blogsRouter.get('/', (request, response) => {
   Blog.find({}).then(blogs => {
     response.json(blogs.map(blog => blog.toJSON()))
   })
+
+
 })
 
 blogsRouter.get('/:id', (request, response, next) => {
