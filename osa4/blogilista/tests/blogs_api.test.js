@@ -26,7 +26,6 @@ beforeEach(async () => {
   await blogObject.save()
   blogObject = new Blog(initialBlogs[1])
   await blogObject.save()
-  console.log(initialBlogs)
 })
 
 
@@ -51,6 +50,28 @@ test('a specific blog is within the returned blogs', async () => {
   expect(titles).toContain(
     'Näin lauletaan'
   )
+})
+
+test('all blogs have id', async () => {
+  const response = await api.get('/api/blogs')
+  expect(response.body[0].id).toBeDefined()
+})
+
+test('a blog is added', async () => {
+  const response = await api.post('/api/blogs')
+  let blogObject = new Blog({
+    title: 'Näin leikitään',
+    author: 'Maria Myrskyvuori',
+    url: 'www.leikintä.fi',
+    likes: 14,
+  })
+  console.log(blogObject)
+  await blogObject.save()
+  console.log(initialBlogs)
+  const newResponse = await api.get('/api/blogs')
+  expect(newResponse.body).toHaveLength(initialBlogs.length + 2)
+  console.log(initialBlogs.length)
+  console.log(newResponse)
 })
 
 

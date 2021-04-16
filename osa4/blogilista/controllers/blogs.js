@@ -9,6 +9,7 @@ blogsRouter.get('/', (request, response) => {
 
 })
 
+
 blogsRouter.get('/:id', (request, response, next) => {
   Blog.findById(request.params.id)
     .then(blog => {
@@ -20,6 +21,7 @@ blogsRouter.get('/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 })
+
 
 blogsRouter.post('/', (request, response, next) => {
   const body = request.body
