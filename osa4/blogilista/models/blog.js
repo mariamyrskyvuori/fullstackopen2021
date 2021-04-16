@@ -15,10 +15,10 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
 */
 
 const blogSchema = new mongoose.Schema({
-  title: { type: String, minlength: 3, unique: true },
+  title: { type: String, minlength: 3, unique: true, required: true  },
   author: { type: String, minlength: 8 },
-  url: String,
-  likes: Number
+  url: { type: String, required: true },
+  likes: { type: Number, required: true }
 })
 
 blogSchema.plugin(uniqueValidator)
