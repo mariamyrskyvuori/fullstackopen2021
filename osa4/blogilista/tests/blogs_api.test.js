@@ -1,9 +1,8 @@
-const middleware = require('utils/middleware')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
-require('express-async-errors')
+//require('express-async-errors')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
@@ -82,7 +81,7 @@ describe('when there is initially some blogs saved', () => {
       expect(newResponse.body[2].likes).toEqual(0)
     })
 
-    /*test('title and url doesnt exist', async () => {
+    test('title and url doesnt exist', async () => {
 
       const blogObject = {
         author: 'Maria Myrskyvuori',
@@ -97,7 +96,7 @@ describe('when there is initially some blogs saved', () => {
       const response = await api.get('/api/blogs')
 
       expect(response.body).toHaveLength(helper.initialBlogs.length)
-    })*/
+    })
 
 
     describe('deletion of a blog', () => {
@@ -116,17 +115,18 @@ describe('when there is initially some blogs saved', () => {
       })
     })
     describe('updating a blog', () => {
-      test('succeeds with status code 201 if id is valid', async () => {
-        const blog = await api.get('/api/blogs/:id')
-        const blogToUpdate = {
-          likes: blog.likes,
-        }
+      test('succeeds with status code 200 if id is valid', async () => {
+        const blog = await api.get('/api/blogs')
+        const blogToUpdate = blog.body[0]
+        blogToUpdate.likes = 20
         await api
-          .put(`/api/notes/${blogToUpdate}`)
-          .expect(201)
+          .put(`/api/blogs/` + blogToUpdate.id)
+          .send(blogToUpdate)
+          .expect(200)
+          .expect('Content-Type', /application\/json/)
 
-        const blogsAtEnd = await api.get('/api/blogs')
-        expect(blogsAtEnd.body).toHaveLength(helper.initialBlogs.length)
+        const newResponse = await api.get('/api/blogs')
+        expect(newResponse.body[0].likes).toEqual(20)
 
       })
     })
