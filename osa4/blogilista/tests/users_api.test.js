@@ -1,6 +1,10 @@
 const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const User = require('../models/user')
+const supertest = require('supertest')
+const app = require('../app')
+const api = supertest(app)
+const mongoose = require('mongoose')
 
 //...
 
@@ -30,12 +34,12 @@ describe('when there is initially one user at db', () => {
       name: 'Matti Testaaja',
       password: 'salasana',
     }
-    if (newUser.password.length < 3 || newUser.password === undefined ) {
-      return response.status(400).json({ error: 'password missing or too short' })
-    }
+
     await api
       .post('/api/users')
       .send(newUser)
+      .set('Accept', 'application/json')
+      .set('Authorization', 'bearer ' + getToken())
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -58,6 +62,8 @@ describe('when there is initially one user at db', () => {
     const result = await api
       .post('/api/users')
       .send(newUser)
+      .set('Accept', 'application/json')
+      .set('Authorization', 'bearer ' + getToken())
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -74,8 +80,8 @@ const usersInDb = async () => {
 }
 
 module.exports = {
-
-  //nonExistingId,
-  //blogsInDb,
   usersInDb,
 }
+afterAll(async () => {
+  await mongoose.connection.close()
+})

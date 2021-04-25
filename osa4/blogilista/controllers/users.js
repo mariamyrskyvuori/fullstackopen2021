@@ -34,6 +34,10 @@ usersRouter.post('/', async (request, response) => {
     passwordHash,
   })
 
+  if (newUser.password.length < 3 || newUser.password === undefined ) {
+    return response.status(400).json({ error: 'password missing or too short' })
+  }
+
   const savedUser = await user.save()
 
   response.json(savedUser)

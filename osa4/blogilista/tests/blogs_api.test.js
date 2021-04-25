@@ -117,8 +117,6 @@ describe('when there is initially some blogs saved', () => {
         url: 'www.lallattelu.fi',
         user: response.body.id
       }
-      if (!blogObject.hasOwnProperty("likes"))
-        blogObject.likes = 0
 
       await api
         .post('/api/blogs')
