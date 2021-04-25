@@ -1,6 +1,6 @@
-const _ = require('lodash')
-const array = require('lodash/array')
-const object = require('lodash/fp/object')
+const Blog = require('../models/blog')
+const User = require('../models/user')
+
 
 const initialBlogs = [
   {
@@ -17,6 +17,29 @@ const initialBlogs = [
   },
 ]
 
+const nonExistingId = async () => {
+  const blog = new Blog({ title: 'Opi leipomaan', author: 'Marika Sundgren',
+    url: 'www.leivotaan.fi',
+    likes: 16 })
+  await blog.save()
+  await blog.remove()
+  return blog.id.toString()
+}
+const blogsInDb = async () => {
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
+}
+
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(u => u.toJSON())
+}
+
 module.exports = {
   initialBlogs,
+  nonExistingId,
+  blogsInDb,
+  usersInDb,
 }
+
+

@@ -1,7 +1,17 @@
 const bcrypt = require('bcrypt')
+const helper = require('./test_helper')
 const User = require('../models/user')
 
 //...
+
+const getToken = () => {
+  const userForToken = {
+    username: 'root',
+    id: '23456',
+  }
+
+  return jwt.sign(userForToken, process.env.SECRET)
+}
 
 describe('when there is initially one user at db', () => {
   beforeEach(async () => {
@@ -9,7 +19,6 @@ describe('when there is initially one user at db', () => {
 
     const passwordHash = await bcrypt.hash('sekret', 10)
     const user = new User({ username: 'root', passwordHash })
-
     await user.save()
   })
 
@@ -17,11 +26,13 @@ describe('when there is initially one user at db', () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'mluukkai',
-      name: 'Matti Luukkainen',
-      password: 'salainen',
+      username: 'mattitestaaja',
+      name: 'Matti Testaaja',
+      password: 'salasana',
     }
-
+    if (newUser.password.length < 3 || newUser.password === undefined ) {
+      return response.status(400).json({ error: 'password missing or too short' })
+    }
     await api
       .post('/api/users')
       .send(newUser)
@@ -63,8 +74,8 @@ const usersInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs,
-  nonExistingId,
-  blogsInDb,
+
+  //nonExistingId,
+  //blogsInDb,
   usersInDb,
 }
