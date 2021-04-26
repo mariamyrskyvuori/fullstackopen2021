@@ -3,6 +3,7 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 const Blog = require('../models/blog')
 
+
 usersRouter.get('/', async (request, response) => {
   const users = await User
     .find({}).populate('notes')
@@ -34,7 +35,7 @@ usersRouter.post('/', async (request, response) => {
     passwordHash,
   })
 
-  if (newUser.password.length < 3 || newUser.password === undefined ) {
+  if (body.password === undefined || body.password.length < 3 ) {
     return response.status(400).json({ error: 'password missing or too short' })
   }
 

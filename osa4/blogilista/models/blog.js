@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
-
-
 const blogSchema = new mongoose.Schema({
   title: { type: String, minlength: 3, unique: true, required: true  },
   author: { type: String, minlength: 8 },

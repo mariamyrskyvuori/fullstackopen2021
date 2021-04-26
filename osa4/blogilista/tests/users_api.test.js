@@ -5,28 +5,30 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 
 //...
 
-const getToken = () => {
+const getToken = (username) => {
   const userForToken = {
-    username: 'root',
-    id: '23456',
+    username: username,
+    id: '1234567',
   }
 
   return jwt.sign(userForToken, process.env.SECRET)
 }
 
 describe('when there is initially one user at db', () => {
-  beforeEach(async () => {
+  beforeEach(async done => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
+    const user = new User({ username: 'testuser', passwordHash })
     await user.save()
+    done()
   })
 
-  test('creation succeeds with a fresh username', async () => {
+  test('creation succeeds with a fresh username', async done => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
@@ -39,7 +41,7 @@ describe('when there is initially one user at db', () => {
       .post('/api/users')
       .send(newUser)
       .set('Accept', 'application/json')
-      .set('Authorization', 'bearer ' + getToken())
+      .set('Authorization', 'bearer ' + getToken('mattitestaaja'))
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -48,13 +50,14 @@ describe('when there is initially one user at db', () => {
 
     const usernames = usersAtEnd.map(u => u.username)
     expect(usernames).toContain(newUser.username)
+    done()
   })
 
   test('creation fails with proper statuscode and message if username already taken', async () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'root',
+      username: 'testuser',
       name: 'Superuser',
       password: 'salainen',
     }
@@ -63,7 +66,7 @@ describe('when there is initially one user at db', () => {
       .post('/api/users')
       .send(newUser)
       .set('Accept', 'application/json')
-      .set('Authorization', 'bearer ' + getToken())
+      .set('Authorization', 'bearer ' + getToken('testuser'))
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
