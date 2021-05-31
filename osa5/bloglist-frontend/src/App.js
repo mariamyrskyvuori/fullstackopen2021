@@ -21,10 +21,35 @@ const App = () => {
   const [url, setBlogUrl] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [addedMessage, setAddedMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
+
+  const NotificationError = ({message}) => {
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div className="error">
+        {message}
+      </div>
+    )
+  }
+
+  const NotificationAdded = ({message}) => {
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div className="added">
+        {message}
+      </div>
+    )
+  }
 
 
   useEffect(() => {
@@ -56,10 +81,10 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 3000)
     }
   }
   const handleLogout = async (event) => {
@@ -73,10 +98,14 @@ const App = () => {
   const handleNewBlog = async (event) => {
     event.preventDefault()
     await blogService.create({title: title, author: author, url: url})
+    setAddedMessage(`A new blog ${title} by ${author} added`
+    )
+    setTimeout(() => {
+      setAddedMessage(null)
+    }, 3000)
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
-    //window.localStorage.getItem('loggedBloglistappUser')
     setBlogTitle('')
     setBlogAuthor('')
     setBlogUrl('')
@@ -86,6 +115,7 @@ const App = () => {
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
+      <NotificationError message={errorMessage}/>
       <form onSubmit={handleLogin}>
         <div>
           Username
@@ -150,6 +180,7 @@ const App = () => {
     return (
       <div>
         <h2>Blogs</h2>
+        <NotificationAdded message={addedMessage}/>
         <div>{user.name} logged in</div>
         <button type="submit" onClick={handleLogout}>logout</button>
         {createForm()}
