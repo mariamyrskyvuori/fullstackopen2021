@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import axios from 'axios'
 import loginService from './services/login'
+import CreateForm from "./components/CreateForm";
 
 const baseUrl = '/api/login'
 const login = async credentials => {
@@ -26,26 +27,16 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
+  const [createVisible, setCreateVisible] = useState(false)
 
-  const NotificationError = ({message}) => {
+
+  const Notification = ({message, isError}) => {
     if (message === null) {
       return null
     }
 
     return (
-      <div className="error">
-        {message}
-      </div>
-    )
-  }
-
-  const NotificationAdded = ({message}) => {
-    if (message === null) {
-      return null
-    }
-
-    return (
-      <div className="added">
+      <div className={isError ? "error" : "added"}>
         {message}
       </div>
     )
@@ -115,7 +106,7 @@ const App = () => {
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
-      <NotificationError message={errorMessage}/>
+      <Notification message={errorMessage} isError={true}/>
       <form onSubmit={handleLogin}>
         <div>
           Username
@@ -140,47 +131,36 @@ const App = () => {
     </>
   )
 
-  const createForm = () => (
-    <>
-      <h2>Create new blog</h2>
-      <form onSubmit={handleNewBlog}>
-        <div>
-          Title
-          <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={({target}) => setBlogTitle(target.value)}
-          />
+  const createForm = () => {
+    const hideWhenVisible = {display: createVisible ? 'none' : ''}
+    const showWhenVisible = {display: createVisible ? '' : 'none'}
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setCreateVisible(true)}>new blog</button>
         </div>
-        <div>
-          Author
-          <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={({target}) => setBlogAuthor(target.value)}
+        <div style={showWhenVisible}>
+          <CreateForm
+            title={title}
+            author={author}
+            url={url}
+            handleTitleChange={({target}) => setBlogTitle(target.value)}
+            handleAuthorChange={({target}) => setBlogAuthor(target.value)}
+            handleUrlChange={({target}) => setBlogUrl(target.value)}
+            handleSubmit={handleNewBlog}
           />
+          <button onClick={() => setCreateVisible(false)}>cancel</button>
         </div>
-        <div>
-          Url
-          <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({target}) => setBlogUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </>
-  )
+      </div>
+    )
+  }
+
 
   const blogList = () => {
     return (
       <div>
         <h2>Blogs</h2>
-        <NotificationAdded message={addedMessage}/>
+        <Notification message={addedMessage} isError={false}/>
         <div>{user.name} logged in</div>
         <button type="submit" onClick={handleLogout}>logout</button>
         {createForm()}
@@ -193,16 +173,10 @@ const App = () => {
 
   return (
     <div>
-      {/*<Notification message={errorMessage} />*/}
-
       {user === null && loginForm()}
       {user !== null && blogList()}
-
-
     </div>
   )
-
-
 }
 
 
