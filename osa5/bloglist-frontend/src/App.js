@@ -97,9 +97,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
-    setBlogTitle('')
-    setBlogAuthor('')
-    setBlogUrl('')
+    setCreateVisible(false)
   }
 
 
