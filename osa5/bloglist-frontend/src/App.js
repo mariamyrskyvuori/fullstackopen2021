@@ -3,7 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import axios from 'axios'
 import loginService from './services/login'
-import CreateForm from "./components/CreateForm";
+import CreateBlog from "./components/CreateBlog";
 
 const baseUrl = '/api/login'
 const login = async credentials => {
@@ -16,17 +16,12 @@ const login = async credentials => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlog, setNewBlog] = useState('')
-  const [title, setBlogTitle] = useState('')
-  const [author, setBlogAuthor] = useState('')
-  const [url, setBlogUrl] = useState('')
-  const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [addedMessage, setAddedMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
+  //const [token, setToken] = useState(null)
   const [createVisible, setCreateVisible] = useState(false)
 
 
@@ -86,19 +81,7 @@ const App = () => {
     setPassword('')
   }
 
-  const handleNewBlog = async (event) => {
-    event.preventDefault()
-    await blogService.create({title: title, author: author, url: url})
-    setAddedMessage(`A new blog ${title} by ${author} added`
-    )
-    setTimeout(() => {
-      setAddedMessage(null)
-    }, 3000)
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-    setCreateVisible(false)
-  }
+
 
 
   const loginForm = () => (
@@ -138,14 +121,10 @@ const App = () => {
           <button onClick={() => setCreateVisible(true)}>new blog</button>
         </div>
         <div style={showWhenVisible}>
-          <CreateForm
-            title={title}
-            author={author}
-            url={url}
-            handleTitleChange={({target}) => setBlogTitle(target.value)}
-            handleAuthorChange={({target}) => setBlogAuthor(target.value)}
-            handleUrlChange={({target}) => setBlogUrl(target.value)}
-            handleSubmit={handleNewBlog}
+          <CreateBlog
+            setAddedMessage={setAddedMessage}
+            setBlogs={setBlogs}
+            setCreateVisible={setCreateVisible}
           />
           <button onClick={() => setCreateVisible(false)}>cancel</button>
         </div>
