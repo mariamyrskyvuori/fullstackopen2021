@@ -5,14 +5,13 @@ import axios from 'axios'
 import loginService from './services/login'
 import CreateBlog from "./components/CreateBlog";
 
+
 const baseUrl = '/api/login'
 const login = async credentials => {
   const response = await axios.post(baseUrl, credentials)
   return response.data
 }
 
-
-//export default { login }
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -21,8 +20,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  //const [token, setToken] = useState(null)
   const [createVisible, setCreateVisible] = useState(false)
+  const [blogVisible, setBlogVisible] = useState(false)
 
 
   const Notification = ({message, isError}) => {
@@ -82,8 +81,6 @@ const App = () => {
   }
 
 
-
-
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
@@ -112,6 +109,7 @@ const App = () => {
     </>
   )
 
+
   const createForm = () => {
     const hideWhenVisible = {display: createVisible ? 'none' : ''}
     const showWhenVisible = {display: createVisible ? '' : 'none'}
@@ -132,21 +130,39 @@ const App = () => {
     )
   }
 
-
   const blogList = () => {
+
+    const hideWhenVisible = { display: blogVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogVisible ? '' : 'none' }
+
     return (
       <div>
         <h2>Blogs</h2>
         <Notification message={addedMessage} isError={false}/>
-        <div>{user.name} logged in</div>
-        <button type="submit" onClick={handleLogout}>logout</button>
-        {createForm()}
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog}/>
-        )}
+        <div>{user.name} logged in
+          <button type="submit" onClick={handleLogout}>logout</button>
+        </div>
+        <div>{createForm()}</div>
+        <div style={hideWhenVisible}>
+          <div>{blogs.map(blog =>
+            <Blog key={blog.id} blog={blog}/>
+          )}</div>
+          <button onClick={() => setBlogVisible(true)}>show</button>
+        </div>
+        <div style={showWhenVisible}>
+          <div>{blogs.map(blog =>
+            <Blog key={blog.id} blog={blog}/>
+          )}</div>
+          <button onClick={() => setBlogVisible(false)}>hide</button>
+        </div>
       </div>
     )
+
+
+
+
   }
+
 
   return (
     <div>

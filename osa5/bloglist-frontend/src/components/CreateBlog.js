@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import blogService from "../services/blogs";
+import blogService from "../services/blogs"
 
 const CreateBlog = ({
                       setAddedMessage,
@@ -24,7 +24,6 @@ const CreateBlog = ({
   return (
     <div>
       <h2>Create new blog</h2>
-
       <form onSubmit={handleNewBlog}>
         <div>
           Title
