@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
+
 
 
 const Blog = ({
-                blog,
-                setBlogVisible
+                blog
               }) => {
   const blogStyle = {
     paddingTop: 10,
@@ -12,33 +12,28 @@ const Blog = ({
     borderWidth: 1,
     marginBottom: 5
   }
-
+  const [visible, setBlogVisible] = useState(false)
 
   return (
-    <div>
-      <div style={blogStyle}>
-        <div style={hideWhenVisible}>
-          <div>
-            {blog.title} {blog.author}
-            <button type="submit">view</button>
-          </div>
-          <button onClick={() => setBlogVisible(true)}>view</button>
-        </div>
+    <div style={blogStyle}>
+      {blog.title} {blog.author}
+      <button
+        onClick={() => setBlogVisible(previousVisible => !previousVisible)}>{visible ? 'hide' : 'view'}</button>
 
-        <div style={showWhenVisible}>
-          <div>
-            {blog.title} {blog.author}
-            <button type="submit">hide</button>
-          </div>
+      <div>
+        {visible && (<div>
           <div>{blog.url}</div>
           <div>likes {blog.likes}
+            <button type="submit">like</button>
           </div>
-          <div>{blog.username}</div>
-          <button onClick={() => setBlogVisible(false)}>hide</button>
-        </div>
+          <div>{blog.user.name}</div>
+        </div>)}
       </div>
     </div>
+
   )
+
+
 }
 
 
