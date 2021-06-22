@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import blogService from "../services/blogs";
 
 
 
@@ -24,7 +25,7 @@ const Blog = ({
         {visible && (<div>
           <div>{blog.url}</div>
           <div>likes {blog.likes}
-            <button type="submit">like</button>
+            <div>{updateForm()}</div>
           </div>
           <div>{blog.user.name}</div>
         </div>)}

@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import axios from 'axios'
 import loginService from './services/login'
 import CreateBlog from "./components/CreateBlog";
+import UpdateBlog from "./components/UpdateBlog";
 
 
 const baseUrl = '/api/login'
@@ -130,10 +131,26 @@ const App = () => {
     )
   }
 
+  const updateForm = () => {
+
+    return (
+      <div>
+        <div>
+          <button onClick={() => UpdateBlog()}>like</button>
+        </div>
+        <div>
+          <UpdateBlog
+            setBlogs={setBlogs}
+          />
+        </div>
+      </div>
+    )
+  }
+
   const blogList = () => {
 
-    const hideWhenVisible = { display: blogVisible ? 'none' : '' }
-    const showWhenVisible = { display: blogVisible ? '' : 'none' }
+    const hideWhenVisible = {display: blogVisible ? 'none' : ''}
+    const showWhenVisible = {display: blogVisible ? '' : 'none'}
 
     return (
       <div>
@@ -147,7 +164,6 @@ const App = () => {
           <div>{blogs.map(blog =>
             <Blog key={blog.id} blog={blog}/>
           )}</div>
-          <button onClick={() => setBlogVisible(true)}>show</button>
         </div>
         <div style={showWhenVisible}>
           <div>{blogs.map(blog =>
@@ -157,8 +173,6 @@ const App = () => {
         </div>
       </div>
     )
-
-
 
 
   }
